@@ -1,0 +1,60 @@
+<p id="notice"><%= notice %></p>
+
+<h1>운정 명소</h1>
+
+<div id="map" style="width:600px;height:600px;"></div>
+
+<script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey= b342b6c58eb12b19ab7895d9831f2592"></script>
+
+<script>
+  var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+      mapOption = { 
+          center: new daum.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+          level: 3 // 지도의 확대 레벨
+      };
+
+  // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+  var map = new daum.maps.Map(mapContainer, mapOption); 
+
+
+
+  var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+
+  var options = { //지도를 생성할 때 필요한 기본 옵션
+    center: new daum.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
+    level: 3 //지도의 레벨(확대, 축소 정도)
+  };
+
+  var map = new daum.maps.Map(container, options); //지도 생성 및 객체 리턴
+
+</script>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Content</th>
+      <th>Lat</th>
+      <th>Lng</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @posts.each do |post| %>
+      <tr>
+        <td><%= post.title %></td>
+        <td><%= post.content %></td>
+        <td><%= post.lat %></td>
+        <td><%= post.lng %></td>
+        <td><%= link_to 'Show', post %></td>
+        <td><%= link_to 'Edit', edit_post_path(post) %></td>
+        <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Post', new_post_path %>
