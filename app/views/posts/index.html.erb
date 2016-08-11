@@ -1,23 +1,37 @@
 <p id="notice"><%= notice %></p>
 
-<h1>운정 명소</h1>
-
-<br>
-
-<%= link_to 'New Post', new_post_path %>
-
-<br>
+<head>
+  <style>
+  .center {
+      margin: auto;
+      width: 90%;
+      border: 3px solid #A48654;
+      padding: 10px;
+  }
+  </style>
+</head>
 
 <body>
+  <h1>Paju Map</h1> 
 
-<div id="map" style="width:100%;height:700px;"></div>
+  <br>
+
+  <%= link_to '어디를 다녀오셨나요?', new_post_path, class: "btn btn-default" %>
+
+  <br>
+
+  <br>
+
+<div class="center">
+  <div id="map" style="width:100%;height:700px;"></div>
+</div>
 
 <script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=b342b6c58eb12b19ab7895d9831f2592"></script>
 
 <script>  
   var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
     mapOption = { 
-        center: new daum.maps.LatLng(37.743896, 126.731570), // 지도의 중심좌표
+        center: new daum.maps.LatLng(37.753896, 126.731570), // 지도의 중심좌표
         level: 7 // 지도의 확대 레벨
     };
 
