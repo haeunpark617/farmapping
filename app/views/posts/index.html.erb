@@ -2,59 +2,79 @@
 
 <h1>운정 명소</h1>
 
-<div id="map" style="width:600px;height:600px;"></div>
-
-<script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey= b342b6c58eb12b19ab7895d9831f2592"></script>
-
-<script>
-  var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-      mapOption = { 
-          center: new daum.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
-          level: 3 // 지도의 확대 레벨
-      };
-
-  // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
-  var map = new daum.maps.Map(mapContainer, mapOption); 
-
-
-
-  var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-
-  var options = { //지도를 생성할 때 필요한 기본 옵션
-    center: new daum.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
-    level: 3 //지도의 레벨(확대, 축소 정도)
-  };
-
-  var map = new daum.maps.Map(container, options); //지도 생성 및 객체 리턴
-
-</script>
-
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Content</th>
-      <th>Lat</th>
-      <th>Lng</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @posts.each do |post| %>
-      <tr>
-        <td><%= post.title %></td>
-        <td><%= post.content %></td>
-        <td><%= post.lat %></td>
-        <td><%= post.lng %></td>
-        <td><%= link_to 'Show', post %></td>
-        <td><%= link_to 'Edit', edit_post_path(post) %></td>
-        <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
 <br>
 
 <%= link_to 'New Post', new_post_path %>
+
+<br>
+
+<body>
+
+<div id="map" style="width:100%;height:700px;"></div>
+
+<script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=b342b6c58eb12b19ab7895d9831f2592"></script>
+
+<script>  
+  var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+    mapOption = { 
+        center: new daum.maps.LatLng(37.743896, 126.731570), // 지도의 중심좌표
+        level: 7 // 지도의 확대 레벨
+    };
+
+  // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
+  var map = new daum.maps.Map(mapContainer, mapOption);
+
+  // 마커를 표시할 위치와 title 객체 배열입니다 
+  var positions = [
+    <% @posts.each do |post| %>
+      {
+        id: "<%= post.id %>",
+        title: "<%= post.title %>",
+        latlng: new daum.maps.LatLng(<%= post.lat %>, <%= post.lng %>)
+      },
+    <% end %>
+  ];
+    
+  for (var i = 0; i < positions.length; i ++) {
+    // 마커를 생성합니다
+    var marker = new daum.maps.Marker({
+        map: map, // 마커를 표시할 지도
+        title: positions[i].id, // 마커의 id
+        position: positions[i].latlng // 마커의 위치
+    });
+
+  // 마커에 표시할 인포윈도우를 생성합니다 
+    var infowindow = new daum.maps.InfoWindow({
+        content: positions[i].title // 인포윈도우에 표시할 내용
+    });
+
+    // 마커에 mouseover 이벤트와 mouseout 이벤트를 등록합니다
+    // 이벤트 리스너로는 클로저를 만들어 등록합니다 
+    // for문에서 클로저를 만들어 주지 않으면 마지막 마커에만 이벤트가 등록됩니다
+    daum.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+    daum.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+    daum.maps.event.addListener(marker, 'click', goPost(marker));
+  }
+
+  function goPost(marker){
+    return function(){
+      $(location).attr('href', 'http://localhost:3000/posts/'+marker.getTitle())
+    }
+  }
+
+  // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
+  function makeOverListener(map, marker, infowindow) {
+      return function() {
+          infowindow.open(map, marker);
+      };
+  }
+
+  // 인포윈도우를 닫는 클로저를 만드는 함수입니다 
+  function makeOutListener(infowindow) {
+      return function() {
+          infowindow.close();
+      };
+  }
+</script>
+
+</body>
