@@ -6,6 +6,8 @@
     <%= f.input :content %>
     <%= f.input :lat %>
     <%= f.input :lng %>
+     <%= f.input :picture, as: :file %>
+      <%= f.hidden_field :picture_cache %>
   </div>
 
   <div class="form-actions">
